@@ -1,384 +1,113 @@
-<!doctype html>
+@"
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0b1220">
-    <title>BlinkGuard | Live Monitor</title>
-    <style>
-      :root {
-        color-scheme: dark;
-        font-family: Inter, "Segoe UI", sans-serif;
-        background: #0b1220;
-        color: #e5edf8;
-      }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlinkGuard - Localhost Monitor</title>
+  <style>
+    /* Color Palette Configuration */
+    :root {
+      --ocean-deep: #4E635E;   /* Deep greenish slate - Main Background */
+      --villa-nova: #E2E0CB;   /* Soft warm cream - Primary Highlights & Accents */
+      --siren-song: #A6B49E;   /* Pale sage green - Borders & Soft Text */
+      --big-river: #818C7B;    /* Olive-gray - Secondary Container Accents */
+      
+      --text-main: #E2E0CB;
+      --text-muted: #A6B49E;
+    }
 
-      * {
-        box-sizing: border-box;
-      }
+    body {
+      background-color: var(--ocean-deep);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
 
-      body {
-        min-height: 100vh;
-        margin: 0;
-        background:
-          radial-gradient(ellipse at 50% 0, #142544 0, transparent 55%),
-          #0b1220;
-      }
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+      max-width: 600px;
+    }
 
-      main {
-        width: min(100% - 32px, 1100px);
-        margin: 0 auto;
-        padding: 52px 0;
-      }
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--villa-nova);
+    }
 
-      header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        margin-bottom: 28px;
-      }
+    p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin: 0;
+      line-height: 1.5;
+    }
 
-      h1 {
-        margin: 0;
-        font-size: clamp(1.7rem, 4vw, 2.4rem);
-        letter-spacing: -0.04em;
-      }
+    .video-container {
+      border: 4px solid var(--siren-song);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      background-color: var(--big-river);
+      transition: border-color 0.3s ease;
+    }
 
-      header p {
-        margin: 8px 0 0;
-        color: #9aabc3;
-      }
+    .video-container:hover {
+      border-color: var(--villa-nova);
+    }
 
-      .status {
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        flex: none;
-        padding: 9px 13px;
-        border: 1px solid #28415c;
-        border-radius: 999px;
-        color: #b9c9dc;
-        font-size: 0.85rem;
-      }
+    img {
+      display: block;
+      width: 640px;
+      height: 480px;
+      object-fit: cover;
+    }
 
-      .status::before {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #f4b942;
-        content: "";
-        box-shadow: 0 0 12px #f4b94288;
-      }
+    footer {
+      margin-top: 32px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      opacity: 0.8;
+      display: flex;
+      gap: 16px;
+    }
 
-      .status[data-state="ready"]::before {
-        background: #40d7a0;
-        box-shadow: 0 0 12px #40d7a088;
-      }
+    .color-chip {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
 
-      .status[data-state="error"]::before {
-        background: #ff647c;
-        box-shadow: 0 0 12px #ff647c88;
-      }
+  <header>
+    <h1>BlinkGuard</h1>
+    <p>Preventing Computer Vision Syndrome locally using real-time computer vision.</p>
+  </header>
 
-      .camera-card {
-        overflow: hidden;
-        border: 1px solid #22334a;
-        border-radius: 18px;
-        background: #101b2b;
-        box-shadow: 0 24px 70px #0005;
-      }
+  <div class="video-container">
+    <img src="/video_feed" alt="Live Camera Feed">
+  </div>
 
-      .camera-heading {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 20px;
-        border-bottom: 1px solid #22334a;
-        color: #c5d2e3;
-        font-size: 0.9rem;
-      }
+  <footer>
+    <span><span class="color-chip" style="background-color: var(--ocean-deep);"></span>Ocean Deep</span>
+    <span><span class="color-chip" style="background-color: var(--villa-nova);"></span>Villa Nova</span>
+    <span><span class="color-chip" style="background-color: var(--siren-song);"></span>Siren Song</span>
+    <span><span class="color-chip" style="background-color: var(--big-river);"></span>Big River</span>
+  </footer>
 
-      .camera-heading span:last-child {
-        color: #8294ad;
-        font-size: 0.8rem;
-      }
-
-      .video-frame {
-        position: relative;
-        display: grid;
-        min-height: 260px;
-        aspect-ratio: 16 / 9;
-        place-items: center;
-        background: #050a12;
-      }
-
-      .video-frame video {
-        display: block;
-        width: 100%;
-        height: 100%;
-        max-height: 68vh;
-        object-fit: contain;
-        transform: scaleX(-1);
-      }
-
-      .placeholder {
-        position: absolute;
-        padding: 24px;
-        color: #9aabc3;
-        text-align: center;
-      }
-
-      .metrics {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
-        margin-top: 16px;
-      }
-
-      .metric {
-        padding: 16px;
-        border: 1px solid #22334a;
-        border-radius: 12px;
-        background: #101b2b;
-      }
-
-      .metric span {
-        display: block;
-        color: #8294ad;
-        font-size: 0.8rem;
-      }
-
-      .metric strong {
-        display: block;
-        margin-top: 8px;
-        font-size: 1.35rem;
-      }
-
-      .camera-controls {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-top: 18px;
-      }
-
-      button {
-        padding: 11px 16px;
-        border: 0;
-        border-radius: 9px;
-        background: #40d7a0;
-        color: #07150f;
-        font: inherit;
-        font-weight: 650;
-        cursor: pointer;
-      }
-
-      button:disabled {
-        cursor: wait;
-        opacity: 0.65;
-      }
-
-      .camera-message {
-        color: #9aabc3;
-        font-size: 0.9rem;
-      }
-
-      .note {
-        margin: 18px 2px 0;
-        color: #8294ad;
-        font-size: 0.9rem;
-        line-height: 1.6;
-      }
-
-      @media (max-width: 560px) {
-        main {
-          padding: 32px 0;
-        }
-
-        header {
-          align-items: flex-start;
-        }
-
-        .status {
-          padding: 8px 10px;
-          font-size: 0.75rem;
-        }
-
-        .metrics {
-          grid-template-columns: repeat(2, 1fr);
-        }
-
-        .camera-controls {
-          align-items: flex-start;
-          flex-direction: column;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <header>
-        <div>
-          <h1>BlinkGuard</h1>
-          <p>Live eye and blink monitoring</p>
-        </div>
-        <span class="status" id="camera-status" data-state="idle">Camera off</span>
-      </header>
-
-      <section class="camera-card" aria-label="Live camera monitor">
-        <div class="camera-heading">
-          <span>Live monitor</span>
-          <span id="monitor-status">Enable the camera to begin</span>
-        </div>
-        <div class="video-frame">
-          <video id="camera" autoplay playsinline muted hidden></video>
-          <div class="placeholder" id="placeholder">
-            Select “Allow camera” to grant this page access to your webcam.
-          </div>
-        </div>
-      </section>
-      <section class="metrics" aria-label="Blink monitoring measurements">
-        <div class="metric"><span>Eye status</span><strong id="eye-status">--</strong></div>
-        <div class="metric"><span>Blinks / last minute</span><strong id="bpm">--</strong></div>
-        <div class="metric"><span>Total blinks</span><strong id="total-blinks">--</strong></div>
-        <div class="metric"><span>Time since blink</span><strong id="stare">--</strong></div>
-      </section>
-      <div class="camera-controls">
-        <button id="camera-button" type="button">Allow camera</button>
-        <span class="camera-message" id="camera-message" role="status">
-          Your browser will ask for permission. Camera frames are sent to the local BlinkGuard app for analysis.
-        </span>
-      </div>
-      <p class="note">
-        If permission is blocked, use the camera icon beside the address bar to
-        allow access. Camera sharing with other apps depends on your webcam driver.
-      </p>
-    </main>
-    <script>
-      const video = document.getElementById("camera");
-      const button = document.getElementById("camera-button");
-      const status = document.getElementById("camera-status");
-      const message = document.getElementById("camera-message");
-      const monitorStatus = document.getElementById("monitor-status");
-      const placeholder = document.getElementById("placeholder");
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      let cameraStream = null;
-      let analyzing = false;
-
-      function setStatus(text, state) {
-        status.textContent = text;
-        status.dataset.state = state;
-      }
-
-      function stopCamera() {
-        analyzing = false;
-        if (cameraStream) {
-          cameraStream.getTracks().forEach((track) => track.stop());
-          cameraStream = null;
-        }
-        video.srcObject = null;
-        video.hidden = true;
-        placeholder.hidden = false;
-        button.textContent = "Allow camera";
-        button.disabled = false;
-        setStatus("Camera off", "idle");
-        monitorStatus.textContent = "Enable the camera to begin";
-      }
-
-      function cameraError(error) {
-        const explanations = {
-          NotAllowedError: "Camera permission was denied. Allow it in the browser address-bar settings, then try again.",
-          NotFoundError: "No camera was found. Connect a webcam and try again.",
-          NotReadableError: "The camera is busy or unavailable. Close other camera apps and try again.",
-          SecurityError: "The browser blocked camera access. Open this app at 127.0.0.1 or localhost."
-        };
-        return explanations[error.name] || `Could not start the camera: ${error.message || error.name}`;
-      }
-
-      async function analyzeLoop() {
-        if (!analyzing || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
-          if (analyzing) setTimeout(analyzeLoop, 100);
-          return;
-        }
-
-        const scale = Math.min(1, 640 / video.videoWidth);
-        canvas.width = Math.round(video.videoWidth * scale);
-        canvas.height = Math.round(video.videoHeight * scale);
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        try {
-          const frame = await new Promise((resolve, reject) => {
-            canvas.toBlob((blob) => {
-              if (blob) resolve(blob);
-              else reject(new Error("Could not capture a camera frame."));
-            }, "image/jpeg", 0.75);
-          });
-          const response = await fetch("{{ url_for('analyze_video_frame') }}", {
-            method: "POST",
-            headers: { "Content-Type": "image/jpeg" },
-            body: frame
-          });
-          const result = await response.json();
-          if (!response.ok) throw new Error(result.error || "Frame analysis failed.");
-
-          document.getElementById("eye-status").textContent = result.face_detected
-            ? result.eyes_open ? "Open" : "Closed"
-            : "--";
-          document.getElementById("bpm").textContent = result.bpm;
-          document.getElementById("total-blinks").textContent = result.total_blinks;
-          document.getElementById("stare").textContent = `${result.stare_sec.toFixed(1)}s`;
-          monitorStatus.textContent = result.warning
-            ? "Stare warning — remember to blink"
-            : result.face_detected ? "Face detected — monitoring" : "Looking for a face";
-          setStatus("Camera active", "ready");
-        } catch (error) {
-          message.textContent = error.message;
-          monitorStatus.textContent = "Analysis unavailable";
-          setStatus("Analysis error", "error");
-        }
-
-        if (analyzing) setTimeout(analyzeLoop, 100);
-      }
-
-      button.addEventListener("click", async () => {
-        if (cameraStream) {
-          stopCamera();
-          message.textContent = "Camera stopped.";
-          return;
-        }
-
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          message.textContent = "This browser does not support camera access. Try a current version of Chrome or Edge.";
-          setStatus("Unsupported browser", "error");
-          return;
-        }
-
-        button.disabled = true;
-        setStatus("Requesting access", "idle");
-        message.textContent = "Choose Allow in your browser's camera permission prompt.";
-        try {
-          cameraStream = await navigator.mediaDevices.getUserMedia({
-            audio: false,
-            video: { width: { ideal: 640 }, height: { ideal: 480 } }
-          });
-          video.srcObject = cameraStream;
-          await video.play();
-          video.hidden = false;
-          placeholder.hidden = true;
-          button.textContent = "Stop camera";
-          button.disabled = false;
-          message.textContent = "Camera permission granted. Frames are being analyzed by the local BlinkGuard app.";
-          analyzing = true;
-          analyzeLoop();
-        } catch (error) {
-          stopCamera();
-          message.textContent = cameraError(error);
-          setStatus("Camera unavailable", "error");
-        }
-      });
-
-      window.addEventListener("pagehide", stopCamera);
-    </script>
-  </body>
+</body>
 </html>
+"@ | Out-File -FilePath "templates\index.html" -Encoding utf8
